@@ -70,7 +70,6 @@ resource "aws_eks_node_group" "managed_nodes" {
   }
 
   capacity_type  = var.node_group.capacity_type
-  disk_size      = var.node_group.disk_size
   instance_types = var.node_group.instance_types
 
 
