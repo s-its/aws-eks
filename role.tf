@@ -1,6 +1,6 @@
 locals {
   cluster_role_name = "${var.cluster_name}-cluster-role"
-  node_role_name = "${var.cluster_name}-node-role"
+  node_role_name    = "${var.cluster_name}-node-role"
 }
 
 resource "aws_iam_role" "main" {

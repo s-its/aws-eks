@@ -24,9 +24,17 @@ resource "aws_eks_cluster" "cluster" {
 # Launch template
 
 resource "aws_launch_template" "eks_node_group" {
-  name_prefix   = "${var.cluster_name}-node-group"
-  image_id      = data.aws_ami.eks_base.id
+  name_prefix = "${var.cluster_name}-node-group"
+  image_id    = data.aws_ami.eks_base.id
 
+  block_device_mappings {
+    device_name = "/dev/xvda"
+
+    ebs {
+      volume_size = var.node_group.disk_size
+      volume_type = "gp3"
+    }
+  }
 
   network_interfaces {
     associate_public_ip_address = false
@@ -55,7 +63,7 @@ resource "aws_eks_node_group" "managed_nodes" {
     min_size     = var.node_group.min_node
   }
 
-  ami_type        = var.node_group.ami_type
+  ami_type = var.node_group.ami_type
   launch_template {
     id      = aws_launch_template.eks_node_group.id
     version = "$Latest"
@@ -80,8 +88,8 @@ resource "aws_eks_node_group" "managed_nodes" {
 
 # Optional X-Ray Addon
 resource "aws_eks_addon" "xray" {
-  cluster_name = aws_eks_cluster.cluster.name
-  addon_name   = "aws-xray"
+  cluster_name                = aws_eks_cluster.cluster.name
+  addon_name                  = "aws-xray"
   resolve_conflicts_on_update = "PRESERVE"
 
   tags = var.tags
