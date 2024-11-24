@@ -21,6 +21,27 @@ resource "aws_eks_cluster" "cluster" {
   )
 }
 
+# Launch template
+
+resource "aws_launch_template" "eks_node_group" {
+  name_prefix   = "${var.cluster_name}-node-group"
+  image_id      = data.aws_ami.eks_base.id
+
+
+  network_interfaces {
+    associate_public_ip_address = false
+  }
+
+  tag_specifications {
+    resource_type = "instance"
+    tags = {
+      Name        = "${var.cluster_name}-node"
+      Environment = var.environment
+    }
+  }
+}
+
+
 # Managed Node Group
 resource "aws_eks_node_group" "managed_nodes" {
   cluster_name    = aws_eks_cluster.cluster.name
@@ -35,7 +56,10 @@ resource "aws_eks_node_group" "managed_nodes" {
   }
 
   ami_type        = var.node_group.ami_type
-  release_version = data.aws_ami.eks_base.id
+  launch_template {
+    id      = aws_launch_template.eks_node_group.id
+    version = "$Latest"
+  }
 
   capacity_type  = var.node_group.capacity_type
   disk_size      = var.node_group.disk_size
@@ -113,33 +137,33 @@ resource "null_resource" "monitoring" {
   }
 }*/
 
-resource "null_resource" "aws_sso_roles" {
-  provisioner "local-exec" {
-    command = <<EOT
-    aws eks update-kubeconfig --name ${aws_eks_cluster.cluster.name}
+#resource "null_resource" "aws_sso_roles" {
+#  provisioner "local-exec" {
+#    command = <<EOT
+#    aws eks update-kubeconfig --name ${aws_eks_cluster.cluster.name}
+#
+#    # Map the SSO roles to Kubernetes roles in the aws-auth configmap
+#    kubectl patch configmap aws-auth -n kube-system --patch "$(cat <<EOF
+#    data:
+#      mapRoles: |
+#        - rolearn: ${var.admin_role_arn}
+#          username: admin
+#          groups:
+#            - system:masters
+#        - rolearn: ${var.view_role_arn}
+#          username: view
+#          groups:
+#            - view-group
+#    EOF
+#    )"
+#    EOT
+#  }
+#}
 
-    # Map the SSO roles to Kubernetes roles in the aws-auth configmap
-    kubectl patch configmap aws-auth -n kube-system --patch "$(cat <<EOF
-    data:
-      mapRoles: |
-        - rolearn: ${var.admin_role_arn}
-          username: admin
-          groups:
-            - system:masters
-        - rolearn: ${var.view_role_arn}
-          username: view
-          groups:
-            - view-group
-    EOF
-    )"
-    EOT
-  }
-}
-
-resource "null_resource" "admin_view_roles" {
-  provisioner "local-exec" {
-    command = <<EOT
-    kubectl apply -f ./k8s-admin-view-roles.yaml
-    EOT
-  }
-}
+#resource "null_resource" "admin_view_roles" {
+#  provisioner "local-exec" {
+#    command = <<EOT
+#    kubectl apply -f ./k8s-admin-view-roles.yaml
+#    EOT
+#  }
+#}
