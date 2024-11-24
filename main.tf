@@ -58,12 +58,9 @@ resource "aws_eks_node_group" "managed_nodes" {
 resource "aws_eks_addon" "xray" {
   cluster_name = aws_eks_cluster.cluster.name
   addon_name   = "aws-xray"
+  resolve_conflicts_on_update = "PRESERVE"
 
   tags = var.tags
-
-  lifecycle {
-    ignore_changes = [resolve_conflicts]
-  }
 
   count = var.enable_xray ? 1 : 0
 }
