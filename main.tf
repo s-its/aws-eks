@@ -13,12 +13,12 @@ resource "aws_eks_cluster" "cluster" {
 
   enabled_cluster_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
 
-  tags = merge ({
+  tags = merge({
     Name        = var.cluster_name
     Environment = var.environment
-  },
+    },
     var.tags
-    )
+  )
 }
 
 # Managed Node Group
@@ -37,17 +37,17 @@ resource "aws_eks_node_group" "managed_nodes" {
   ami_type        = var.node_group.ami_type
   release_version = data.aws_ami.eks_base.id
 
-  capacity_type = var.node_group.capacity_type
-  disk_size = var.node_group.disk_size
+  capacity_type  = var.node_group.capacity_type
+  disk_size      = var.node_group.disk_size
   instance_types = var.node_group.instance_types
 
 
 
 
-  tags = merge ({
+  tags = merge({
     Name        = local.node_group_name
     Environment = var.environment
-  },
+    },
     var.tags
   )
 }
