@@ -98,6 +98,7 @@ resource "aws_eks_addon" "xray" {
 
 # Istio Installation
 resource "null_resource" "istio_install" {
+  depends_on = [aws_eks_cluster.cluster,aws_eks_node_group.managed_nodes]
   provisioner "local-exec" {
     command = <<EOT
     curl -L https://istio.io/downloadIstio | sh -
@@ -112,6 +113,7 @@ resource "null_resource" "istio_install" {
 
 # Calico Network Policies
 resource "null_resource" "calico_install" {
+  depends_on = [aws_eks_cluster.cluster,aws_eks_node_group.managed_nodes]
   provisioner "local-exec" {
     command = <<EOT
     kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
@@ -121,6 +123,7 @@ resource "null_resource" "calico_install" {
 
 # Prometheus and Grafana Installation
 resource "null_resource" "monitoring" {
+  depends_on = [aws_eks_cluster.cluster,aws_eks_node_group.managed_nodes]
   provisioner "local-exec" {
     command = <<EOT
     helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
