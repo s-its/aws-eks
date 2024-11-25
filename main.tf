@@ -101,28 +101,28 @@ resource "aws_eks_addon" "xray" {
   count = var.enable_xray ? 1 : 0
 }
 
-resource "aws_eks_addon" "example" {
+resource "aws_eks_addon" "coredns" {
   cluster_name                = aws_eks_cluster.cluster.name
   addon_name                  = "coredns"
   addon_version               = "v1.11.3-eksbuild.2"
   resolve_conflicts_on_update = "PRESERVE"
 }
 
-resource "aws_eks_addon" "example" {
+resource "aws_eks_addon" "eks_pod_identity_agent" {
   cluster_name                = aws_eks_cluster.cluster.name
   addon_name                  = "eks-pod-identity-agent"
   addon_version               = "v1.3.4-eksbuild.1"
   resolve_conflicts_on_update = "PRESERVE"
 }
 
-resource "aws_eks_addon" "example" {
+resource "aws_eks_addon" "kube_proxy" {
   cluster_name                = aws_eks_cluster.cluster.name
   addon_name                  = "kube-proxy"
   addon_version               = "v1.31.2-eksbuild.3"
   resolve_conflicts_on_update = "PRESERVE"
 }
 
-resource "aws_eks_addon" "example" {
+resource "aws_eks_addon" "vpc_cni" {
   cluster_name                = aws_eks_cluster.cluster.name
   addon_name                  = "vpc-cni"
   addon_version               = "v1.19.0-eksbuild.1"
