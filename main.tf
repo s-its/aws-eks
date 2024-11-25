@@ -13,6 +13,11 @@ resource "aws_eks_cluster" "cluster" {
 
   enabled_cluster_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
 
+  access_config {
+    authentication_mode                         = "API_AND_CONFIG_MAP"
+    bootstrap_cluster_creator_admin_permissions = true
+  }
+
   tags = merge({
     Name        = var.cluster_name
     Environment = var.environment
