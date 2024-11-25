@@ -56,6 +56,8 @@ resource "aws_eks_node_group" "managed_nodes" {
   node_group_name = local.node_group_name
   node_role_arn   = aws_iam_role.node_role.arn
   subnet_ids      = var.private_subnets
+  version         = aws_eks_cluster.cluster.version
+  release_version = nonsensitive(data.aws_ssm_parameter.eks_ami_release_version.value)
 
   scaling_config {
     desired_size = var.node_group.desired_node
@@ -63,17 +65,18 @@ resource "aws_eks_node_group" "managed_nodes" {
     min_size     = var.node_group.min_node
   }
 
-  ami_type = var.node_group.ami_type
-  launch_template {
-    id      = aws_launch_template.eks_node_group.id
-    version = "$Latest"
+  #  ami_type = var.node_group.ami_type
+  #  launch_template {
+  #    id      = aws_launch_template.eks_node_group.id
+  #    version = "$Latest"
+  #  }
+
+  update_config {
+    max_unavailable = 1
   }
 
   capacity_type  = var.node_group.capacity_type
   instance_types = var.node_group.instance_types
-
-
-
 
   tags = merge({
     Name        = local.node_group_name
@@ -83,7 +86,9 @@ resource "aws_eks_node_group" "managed_nodes" {
   )
 }
 
-
+data "aws_ssm_parameter" "eks_ami_release_version" {
+  name = "/aws/service/eks/optimized-ami/${aws_eks_cluster.cluster.version}/amazon-linux-2023/x86_64/standard/recommended/release_version"
+}
 
 # Optional X-Ray Addon
 resource "aws_eks_addon" "xray" {
@@ -98,7 +103,7 @@ resource "aws_eks_addon" "xray" {
 
 # Istio Installation
 resource "null_resource" "istio_install" {
-  depends_on = [aws_eks_cluster.cluster,aws_eks_node_group.managed_nodes]
+  depends_on = [aws_eks_cluster.cluster, aws_eks_node_group.managed_nodes]
   provisioner "local-exec" {
     command = <<EOT
     curl -L https://istio.io/downloadIstio | sh -
@@ -113,7 +118,7 @@ resource "null_resource" "istio_install" {
 
 # Calico Network Policies
 resource "null_resource" "calico_install" {
-  depends_on = [aws_eks_cluster.cluster,aws_eks_node_group.managed_nodes]
+  depends_on = [aws_eks_cluster.cluster, aws_eks_node_group.managed_nodes]
   provisioner "local-exec" {
     command = <<EOT
     kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
@@ -123,7 +128,7 @@ resource "null_resource" "calico_install" {
 
 # Prometheus and Grafana Installation
 resource "null_resource" "monitoring" {
-  depends_on = [aws_eks_cluster.cluster,aws_eks_node_group.managed_nodes]
+  depends_on = [aws_eks_cluster.cluster, aws_eks_node_group.managed_nodes]
   provisioner "local-exec" {
     command = <<EOT
     helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
