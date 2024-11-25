@@ -101,84 +101,32 @@ resource "aws_eks_addon" "xray" {
   count = var.enable_xray ? 1 : 0
 }
 
-# Istio Installation
-resource "null_resource" "istio_install" {
-  depends_on = [aws_eks_cluster.cluster, aws_eks_node_group.managed_nodes]
-  provisioner "local-exec" {
-    command = <<EOT
-    curl -L https://istio.io/downloadIstio | sh -
-    cd istio-*
-    export PATH=$PATH:$PWD/bin
-    istioctl install --set profile=demo -y
-    EOT
-  }
-
-  count = var.enable_istio ? 1 : 0
+resource "aws_eks_addon" "example" {
+  cluster_name                = aws_eks_cluster.cluster.name
+  addon_name                  = "coredns"
+  addon_version               = "v1.11.3-eksbuild.2"
+  resolve_conflicts_on_update = "PRESERVE"
 }
 
-# Calico Network Policies
-resource "null_resource" "calico_install" {
-  depends_on = [aws_eks_cluster.cluster, aws_eks_node_group.managed_nodes]
-  provisioner "local-exec" {
-    command = <<EOT
-    kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
-    EOT
-  }
+resource "aws_eks_addon" "example" {
+  cluster_name                = aws_eks_cluster.cluster.name
+  addon_name                  = "eks-pod-identity-agent"
+  addon_version               = "v1.3.4-eksbuild.1"
+  resolve_conflicts_on_update = "PRESERVE"
 }
 
-# Prometheus and Grafana Installation
-resource "null_resource" "monitoring" {
-  depends_on = [aws_eks_cluster.cluster, aws_eks_node_group.managed_nodes]
-  provisioner "local-exec" {
-    command = <<EOT
-    helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-    helm repo update
-    helm install prometheus prometheus-community/prometheus
-    helm install grafana grafana/grafana
-    EOT
-  }
-
-  count = var.enable_monitoring ? 1 : 0
+resource "aws_eks_addon" "example" {
+  cluster_name                = aws_eks_cluster.cluster.name
+  addon_name                  = "kube-proxy"
+  addon_version               = "v1.31.2-eksbuild.3"
+  resolve_conflicts_on_update = "PRESERVE"
 }
 
-# AWS SSO Integration
-/*resource "null_resource" "aws_sso_users" {
-  provisioner "local-exec" {
-    command = <<EOT
-    aws configure sso
-    aws sso login
-    kubectl create clusterrolebinding sso-admin-binding --clusterrole=cluster-admin --user=<SSO_USER_ARN>
-    EOT
-  }
-}*/
+resource "aws_eks_addon" "example" {
+  cluster_name                = aws_eks_cluster.cluster.name
+  addon_name                  = "vpc-cni"
+  addon_version               = "v1.19.0-eksbuild.1"
+  resolve_conflicts_on_update = "PRESERVE"
+}
 
-#resource "null_resource" "aws_sso_roles" {
-#  provisioner "local-exec" {
-#    command = <<EOT
-#    aws eks update-kubeconfig --name ${aws_eks_cluster.cluster.name}
-#
-#    # Map the SSO roles to Kubernetes roles in the aws-auth configmap
-#    kubectl patch configmap aws-auth -n kube-system --patch "$(cat <<EOF
-#    data:
-#      mapRoles: |
-#        - rolearn: ${var.admin_role_arn}
-#          username: admin
-#          groups:
-#            - system:masters
-#        - rolearn: ${var.view_role_arn}
-#          username: view
-#          groups:
-#            - view-group
-#    EOF
-#    )"
-#    EOT
-#  }
-#}
 
-#resource "null_resource" "admin_view_roles" {
-#  provisioner "local-exec" {
-#    command = <<EOT
-#    kubectl apply -f ./k8s-admin-view-roles.yaml
-#    EOT
-#  }
-#}
