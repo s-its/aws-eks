@@ -134,4 +134,36 @@ resource "aws_eks_addon" "vpc_cni" {
   resolve_conflicts_on_update = "PRESERVE"
 }
 
+resource "aws_eks_access_entry" "admin" {
+  cluster_name      = aws_eks_cluster.cluster.name
+  principal_arn     = var.admin_role_arn
+  type              = "STANDARD"
+}
+
+resource "aws_eks_access_policy_association" "admin" {
+  cluster_name  = aws_eks_cluster.cluster.name
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+  principal_arn = var.admin_role_arn
+
+  access_scope {
+    type       = "cluster"
+  }
+}
+
+resource "aws_eks_access_entry" "view" {
+  cluster_name      = aws_eks_cluster.cluster.name
+  principal_arn     = var.view_role_arn
+  type              = "STANDARD"
+}
+
+resource "aws_eks_access_policy_association" "view" {
+  cluster_name  = aws_eks_cluster.cluster.name
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSAdminViewPolicy"
+  principal_arn = var.view_role_arn
+
+  access_scope {
+    type       = "cluster"
+  }
+}
+
 
