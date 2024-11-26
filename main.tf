@@ -82,6 +82,7 @@ resource "aws_eks_node_group" "managed_nodes" {
 
   capacity_type  = var.node_group.capacity_type
   instance_types = var.node_group.instance_types
+  disk_size  = var.node_group.disk_size
 
   tags = merge({
     Name        = local.node_group_name
