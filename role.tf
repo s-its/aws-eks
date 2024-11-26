@@ -61,6 +61,11 @@ resource "aws_iam_role_policy_attachment" "node-AmazonEKSWorkerNodePolicy" {
   role       = aws_iam_role.node_role.name
 }
 
+resource "aws_iam_role_policy_attachment" "node-AmazonEC2FullAccess" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
+  role       = aws_iam_role.node_role.name
+}
+
 resource "aws_iam_role_policy_attachment" "node-AmazonEC2ContainerRegistryReadOnly" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
   role       = aws_iam_role.node_role.name
