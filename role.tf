@@ -90,7 +90,7 @@ resource "aws_iam_role_policy_attachment" "node-AmazonEKS_CNI_Policy" {
 resource "aws_iam_openid_connect_provider" "oidc" {
   url            = aws_eks_cluster.cluster.identity[0].oidc[0].issuer
   client_id_list = ["sts.amazonaws.com"]
-  thumbprint_list = ["123DBB2CFA54152664053A53D7E34C1A"] # Default AWS OIDC thumbprint
+  thumbprint_list = ["9e99a48a9960b14926bb7f3b10d5debbab3e63b1"] # Default AWS OIDC thumbprint
 }
 
 resource "aws_iam_role" "ebs_csi_driver_role" {
