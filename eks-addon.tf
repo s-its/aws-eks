@@ -33,6 +33,6 @@ resource "aws_eks_addon" "ebs_csi_driver" {
   resolve_conflicts_on_update = "PRESERVE"
   pod_identity_association {
     role_arn = aws_iam_role.ebs_csi_driver_role.arn
-    service_account= "kube-system:ebs-csi-controller-sa"
+    service_account= "ebs-csi-controller-sa"
   }
 }
