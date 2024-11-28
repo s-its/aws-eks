@@ -88,7 +88,7 @@ resource "aws_iam_role_policy_attachment" "node-AmazonEKS_CNI_Policy" {
 }
 
 resource "aws_iam_openid_connect_provider" "oidc" {
-  url            = aws_eks_cluster.cluster.identity[0].oidc.issuer
+  url            = aws_eks_cluster.cluster.identity[0].oidc[0].issuer
   client_id_list = ["sts.amazonaws.com"]
   thumbprint_list = ["123DBB2CFA54152664053A53D7E34C1A"] # Default AWS OIDC thumbprint
 }
@@ -107,7 +107,7 @@ resource "aws_iam_role" "ebs_csi_driver_role" {
         Action = "sts:AssumeRoleWithWebIdentity"
         Condition = {
           StringEquals = {
-            "${replace(aws_eks_cluster.cluster.identity[0].oidc.issuer, "https://", "")}:sub" = "system:serviceaccount:kube-system:ebs-csi-controller-sa"
+            "${replace(aws_eks_cluster.cluster.identity[0].oidc[0].issuer, "https://", "")}:sub" = "system:serviceaccount:kube-system:ebs-csi-controller-sa"
           }
         }
       }
