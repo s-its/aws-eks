@@ -95,7 +95,7 @@ resource "aws_iam_role_policy_attachment" "node-AmazonEKS_CNI_Policy" {
 
 resource "aws_iam_role" "ebs_csi_driver_role" {
   name = local.oidc_role_name
-  assume_role_policy = data.aws_iam_policy_document.ebs_assume_role_policy
+  assume_role_policy = data.aws_iam_policy_document.ebs_assume_role_policy.json
 }
 
 resource "aws_iam_role_policy_attachment" "ebs_csi_driver_policy" {
