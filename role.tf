@@ -31,6 +31,11 @@ resource "aws_iam_role_policy_attachment" "cluster-AmazonEKSServicePolicy" {
   role       = aws_iam_role.main.name
 }
 
+resource "aws_iam_role_policy_attachment" "cluster-AmazonEBSCSIDriverPolicy" {
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
+  role       = aws_iam_role.main.name
+}
+
 # Optionally, enable Security Groups for Pods
 # Reference: https://docs.aws.amazon.com/eks/latest/userguide/security-groups-for-pods.html
 resource "aws_iam_role_policy_attachment" "cluster-AmazonEKSVPCResourceController" {
@@ -54,6 +59,11 @@ resource "aws_iam_role" "node_role" {
     ]
   })
 
+}
+
+resource "aws_iam_role_policy_attachment" "node-AmazonEBSCSIDriverPolicy" {
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
+  role       = aws_iam_role.node_role.name
 }
 
 resource "aws_iam_role_policy_attachment" "node-AmazonEKSWorkerNodePolicy" {
