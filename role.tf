@@ -103,9 +103,10 @@ resource "aws_iam_role_policy_attachment" "ebs_csi_driver_policy" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
 }
 
+/*
 resource "aws_eks_pod_identity_association" "oidc" {
   cluster_name    = aws_eks_cluster.cluster.name
   namespace       = "kube-system"
   service_account = "ebs-csi-controller-sa"
   role_arn        = aws_iam_role.ebs_csi_driver_role.arn
-}
+}*/
