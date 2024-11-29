@@ -32,7 +32,7 @@ resource "aws_eks_addon" "ebs_csi_driver" {
   addon_version               = "v1.37.0-eksbuild.1"
   resolve_conflicts_on_update = "PRESERVE"
   service_account_role_arn = aws_iam_role.ebs_csi_driver_role.arn
-  pod_identity_association = {
+  pod_identity_association {
     role_arn = aws_iam_role.ebs_csi_driver_role.arn
     service_account = "kube-system:ebs-csi-controller-sa"
   }
