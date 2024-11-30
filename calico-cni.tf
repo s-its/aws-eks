@@ -37,6 +37,7 @@ resource "helm_release" "calico" {
 
 
 resource "kubernetes_manifest" "calico_cr" {
+  depends_on = [aws_eks_cluster.cluster]
   manifest = yamldecode(file("${path.module}/calico-cr.yaml"))
 }
 
