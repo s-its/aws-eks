@@ -11,7 +11,7 @@ resource "aws_eks_cluster" "cluster" {
     subnet_ids = var.private_subnets
   }
 
-#  enabled_cluster_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
+  #  enabled_cluster_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
 
   access_config {
     authentication_mode                         = "API_AND_CONFIG_MAP"
@@ -108,9 +108,9 @@ resource "aws_eks_addon" "xray" {
 }
 
 resource "aws_eks_access_entry" "admin" {
-  cluster_name      = aws_eks_cluster.cluster.name
-  principal_arn     = var.admin_role_arn
-  type              = "STANDARD"
+  cluster_name  = aws_eks_cluster.cluster.name
+  principal_arn = var.admin_role_arn
+  type          = "STANDARD"
 }
 
 resource "aws_eks_access_policy_association" "admin" {
@@ -119,14 +119,14 @@ resource "aws_eks_access_policy_association" "admin" {
   principal_arn = var.admin_role_arn
 
   access_scope {
-    type       = "cluster"
+    type = "cluster"
   }
 }
 
 resource "aws_eks_access_entry" "view" {
-  cluster_name      = aws_eks_cluster.cluster.name
-  principal_arn     = var.view_role_arn
-  type              = "STANDARD"
+  cluster_name  = aws_eks_cluster.cluster.name
+  principal_arn = var.view_role_arn
+  type          = "STANDARD"
 }
 
 resource "aws_eks_access_policy_association" "view" {
@@ -135,7 +135,7 @@ resource "aws_eks_access_policy_association" "view" {
   principal_arn = var.view_role_arn
 
   access_scope {
-    type       = "cluster"
+    type = "cluster"
   }
 }
 

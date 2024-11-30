@@ -1,7 +1,7 @@
 locals {
   cluster_role_name = "${var.cluster_name}-cluster-role"
   node_role_name    = "${var.cluster_name}-node-role"
-  oidc_role_name = "${var.cluster_name}-oidc-role"
+  oidc_role_name    = "${var.cluster_name}-oidc-role"
 }
 
 resource "aws_iam_role" "main" {
@@ -94,7 +94,7 @@ resource "aws_iam_role_policy_attachment" "node-AmazonEKS_CNI_Policy" {
 
 
 resource "aws_iam_role" "ebs_csi_driver_role" {
-  name = local.oidc_role_name
+  name               = local.oidc_role_name
   assume_role_policy = data.aws_iam_policy_document.ebs_assume_role_policy.json
 }
 
