@@ -1,4 +1,5 @@
 resource "helm_release" "calico" {
+  depends_on = [aws_eks_cluster.cluster]
   name       = "calico"
   namespace  = "calico"
   repository = "https://projectcalico.docs.tigera.io/charts"
@@ -8,6 +9,7 @@ resource "helm_release" "calico" {
 }
 
 resource "kubernetes_manifest" "calico_cr" {
+  depends_on = [aws_eks_cluster.cluster]
   manifest = <<EOF
 apiVersion: operator.tigera.io/v1
 kind: Installation

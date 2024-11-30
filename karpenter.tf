@@ -1,4 +1,5 @@
 resource "helm_release" "karpenter" {
+  depends_on = [aws_eks_cluster.cluster]
   name       = "karpenter"
   namespace  = "karpenter"
   repository = "https://charts.karpenter.sh"
