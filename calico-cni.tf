@@ -10,7 +10,7 @@ resource "helm_release" "calico" {
 
 resource "kubernetes_manifest" "calico_cr" {
   depends_on = [aws_eks_cluster.cluster]
-  manifest = jsonencode({
+  manifest = {
     apiVersion = "operator.tigera.io/v1"
     kind       = "Installation"
     metadata = {
@@ -32,5 +32,6 @@ resource "kubernetes_manifest" "calico_cr" {
         ]
       }
     }
-  })
+  }
 }
+
