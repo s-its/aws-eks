@@ -56,7 +56,7 @@ resource "aws_eks_cluster" "cluster" {
 
 
 # Managed Node Group
-/*resource "aws_eks_node_group" "managed_nodes" {
+resource "aws_eks_node_group" "managed_nodes" {
   cluster_name    = aws_eks_cluster.cluster.name
   node_group_name = local.node_group_name
   node_role_arn   = aws_iam_role.node_role.arn
@@ -90,7 +90,7 @@ resource "aws_eks_cluster" "cluster" {
     },
     var.tags
   )
-}*/
+}
 
 data "aws_ssm_parameter" "eks_ami_release_version" {
   name = "/aws/service/eks/optimized-ami/${aws_eks_cluster.cluster.version}/amazon-linux-2023/x86_64/standard/recommended/release_version"
