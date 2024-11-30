@@ -8,7 +8,7 @@ resource "helm_release" "calico" {
   create_namespace = true
 }
 
-resource "kubernetes_manifest" "calico_cr" {
+/*resource "kubernetes_manifest" "calico_cr" {
   depends_on = [aws_eks_cluster.cluster]
   manifest = {
     apiVersion = "operator.tigera.io/v1"
@@ -33,5 +33,10 @@ resource "kubernetes_manifest" "calico_cr" {
       }
     }
   }
+}*/
+
+
+resource "kubernetes_manifest" "calico_cr" {
+  manifest = yamldecode(file("${path.module}/calico-cr.yaml"))
 }
 
