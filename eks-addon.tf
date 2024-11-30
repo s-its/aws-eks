@@ -19,12 +19,12 @@ resource "aws_eks_addon" "kube_proxy" {
   resolve_conflicts_on_update = "PRESERVE"
 }
 
-resource "aws_eks_addon" "vpc_cni" {
+/*resource "aws_eks_addon" "vpc_cni" {
   cluster_name                = aws_eks_cluster.cluster.name
   addon_name                  = "vpc-cni"
   addon_version               = "v1.19.0-eksbuild.1"
   resolve_conflicts_on_update = "PRESERVE"
-}
+}*/
 
 resource "aws_eks_addon" "ebs_csi_driver" {
   cluster_name                = aws_eks_cluster.cluster.name

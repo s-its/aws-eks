@@ -11,7 +11,7 @@ resource "aws_eks_cluster" "cluster" {
     subnet_ids = var.private_subnets
   }
 
-  enabled_cluster_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
+#  enabled_cluster_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
 
   access_config {
     authentication_mode                         = "API_AND_CONFIG_MAP"
@@ -28,7 +28,7 @@ resource "aws_eks_cluster" "cluster" {
 
 # Launch template
 
-resource "aws_launch_template" "eks_node_group" {
+/*resource "aws_launch_template" "eks_node_group" {
   name_prefix = "${var.cluster_name}-node-group"
   image_id    = data.aws_ami.eks_base.id
 
@@ -52,11 +52,11 @@ resource "aws_launch_template" "eks_node_group" {
       Environment = var.environment
     }
   }
-}
+}*/
 
 
 # Managed Node Group
-resource "aws_eks_node_group" "managed_nodes" {
+/*resource "aws_eks_node_group" "managed_nodes" {
   cluster_name    = aws_eks_cluster.cluster.name
   node_group_name = local.node_group_name
   node_role_arn   = aws_iam_role.node_role.arn
@@ -90,7 +90,7 @@ resource "aws_eks_node_group" "managed_nodes" {
     },
     var.tags
   )
-}
+}*/
 
 data "aws_ssm_parameter" "eks_ami_release_version" {
   name = "/aws/service/eks/optimized-ami/${aws_eks_cluster.cluster.version}/amazon-linux-2023/x86_64/standard/recommended/release_version"
