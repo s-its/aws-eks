@@ -10,20 +10,27 @@ resource "helm_release" "calico" {
 
 resource "kubernetes_manifest" "calico_cr" {
   depends_on = [aws_eks_cluster.cluster]
-  manifest = <<EOF
-apiVersion: operator.tigera.io/v1
-kind: Installation
-metadata:
-  name: default
-spec:
-  cni:
-    type: Calico
-  calicoNetwork:
-    ipPools:
-    - blockSize: 26
-      cidr: 192.168.0.0/16
-      encapsulation: VXLAN
-      natOutgoing: Enabled
-      nodeSelector: all()
-EOF
+  manifest = jsonencode({
+    apiVersion = "operator.tigera.io/v1"
+    kind       = "Installation"
+    metadata = {
+      name = "default"
+    }
+    spec = {
+      cni = {
+        type = "Calico"
+      }
+      calicoNetwork = {
+        ipPools = [
+          {
+            blockSize    = 26
+            cidr         = "192.168.0.0/16"
+            encapsulation = "VXLAN"
+            natOutgoing  = "Enabled"
+            nodeSelector = "all()"
+          }
+        ]
+      }
+    }
+  })
 }
